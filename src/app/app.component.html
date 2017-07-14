@@ -1,3 +1,38 @@
-<h1>
+<!-- ページタイトル -->
+<span class="title">
   {{title}}
-</h1>
+</span><br>
+
+<!-- 入力テキスト領域 -->
+<div class="block-form">
+  <span *ngIf="planList" class="checkAll">
+    <input type="checkbox" [(ngModel)]="isAllcheck" (click)="allChangeCheckbox()">
+  </span>
+  <input class="planText" [(ngModel)]="newTodoText" (keyup.enter)="addPlan()" placeholder="What needs to be done?">
+</div>
+
+<!-- Todoリスト領域 -->
+<div *ngIf="planList" class="list-area">
+  <ul>
+    <li *ngFor="let plan of planList">
+      <div class="block-list" (mouseenter)="showBtn(plan)" (mouseleave)="hideBtn(plan)">
+        <label>
+          <input class="box" type="checkbox" (click)="changeCheckbox(plan)" [checked]="plan.isCheck" >
+          <span [class.checked]="plan.isCheck === true" >{{plan.value}}</span>
+          <div *ngIf="plan.isShowDeleteBtn === true" class="deleteBtn" (click)=deletePlanOne(plan)>×</div>
+        </label>
+      </div>
+    </li>
+    <li>
+
+      <!-- 件数表示、削除実行領域 -->
+      <div class="block-list-menu">
+        <span class="itemNum">{{listCnt}}items left</span>
+        <div *ngIf="isShowDeleteListBtn === true" class="delete" (click)="deleteCheckedPlan()">
+          <span class="deleteText">Clear completed</span>
+        </div>
+      </div>
+
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,119 @@
+/* ページタイトル */
+span.title{
+    font-size: 6.5em;
+    color: #BC8F8F;
+    text-align: center;
+}
+
+/* 入力テキスト領域 */
+
+div.block-form{
+    width:85%;
+    background-color: white;
+    margin:0 auto;
+    border:1px solid #DDDDDD;
+    padding:1em 0;
+    position: relative;
+}
+
+.checkAll{
+    float: left;
+    padding-top: 0.7em;
+    margin-left: 1.7em;
+}
+
+.planText{
+    padding:0.3em 0;
+    font-size: 1.5em;
+    margin-left: -1.5em;
+    border: none;
+}
+
+/* Todoリスト領域 */
+
+div.list-area{
+    width: 85%;
+    margin:0 auto;
+}
+
+ul{
+    margin:0;
+    padding: 0;
+}
+
+li{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+div.block-list{
+    width:100%;
+    background-color: white;
+    margin:0 2em 0 0;
+    border:1px solid #DDDDDD;
+    font-size: 1.5em;
+    padding:0.5em 0;
+    text-align: left;
+}
+
+div.block-list:hover{
+    padding:0.6em 0.1em;
+    border: 1px solid #FF773E;
+}
+
+.box{
+    margin: 0 2em;
+}
+
+.checked{
+    text-decoration: line-through;
+    color: #CCCCCC;
+}
+
+.deleteBtn{
+    float: right;
+    margin-right: 1em;
+    color: #BC8F8F;
+    font-weight: bold;
+}
+
+.deleteBtn:hover{
+    color: #CC0000;
+    cursor: pointer;
+}
+
+/* 件数表示、削除実行領域 */
+
+div.block-list-menu{
+    width:100%;
+    background-color: white;
+    margin:0 auto;
+    border:1px solid #DDDDDD;
+    font-size: 1.5em;
+    padding:0.5em 0;
+    text-align: left;
+}
+
+.itemNum{
+    font-size: 0.7em;
+    margin-left: 1em;
+    color: #777777;
+    vertical-align: top;
+}
+
+.delete{
+    float: right;
+    font-size: 0.7em;
+    margin-right: 1em;
+    color: #777777;
+}
+
+.delete:hover{
+    color: #CC0000;
+    cursor: pointer;
+}
+
+.deleteText{
+    vertical-align: bottom;
+}
