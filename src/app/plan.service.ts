@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { Plan } from './plan';
 
+const MY_STORAGE_KEY = 'planList';
+
 @Injectable()
 export class PlanService {
+
     /**
      * 予定の内容が空、またはスペースだけじゃないかを判断する
      * 
@@ -27,6 +30,7 @@ export class PlanService {
         } else {
             planList.push(plan);
         }
+        localStorage.setItem(MY_STORAGE_KEY, JSON.stringify(planList));
         return planList;
     }
 
@@ -36,24 +40,7 @@ export class PlanService {
      * @param plan 状態を変更する予定
      */
     changeCheckbox(plan: Plan): void {
-        plan.isCheck = !plan.isCheck;
-    }
-
-    /**
-     * チェックボックスが押されているか判断する
-     * 
-     * @param planList 現在の予定リスト
-     * @return １つでもチェックボックスが押されている状態か
-     * true...押されている, false...押されていない
-     */
-    checkboxIsSelected(planList: Plan[]): boolean {
-        var selected = false;
-        for (var i = 0; i < planList.length; i++) {
-            if (planList[i].isCheck) {
-                selected = true;
-            }
-        }
-        return selected;
+        plan.isCompleted = !plan.isCompleted;
     }
 
     /**
@@ -65,7 +52,7 @@ export class PlanService {
     allChangeCheckbox(isAllcheck: boolean, planList: Plan[]): void {
         var checking = !isAllcheck;
         planList.forEach(function (plan) {
-            plan.isCheck = checking;
+            plan.isCompleted = checking;
         });
     }
 
@@ -76,22 +63,12 @@ export class PlanService {
      * @return チェックがついている予定を削除した後のリスト
      */
     deleteCheckedPlan(planList: Plan[]): Plan[] {
-        var deletePlanList: Plan[] = [];
-        var deleteIdx: number = 0;
-        var count: number = this.countPlanOnCheck(planList, true);
+        var count: number = this.countPlanOnCheck(planList);
         if (planList.length === count) {
             planList = null;
             return planList;
         }
-        while (deleteIdx < planList.length) {
-            if (planList[deleteIdx].isCheck === true) {
-                planList.splice(deleteIdx, 1);
-                deleteIdx = 0;
-            } else {
-                deleteIdx++;
-            }
-        }
-        return planList;
+        return planList.filter(plan => !plan.isCompleted);
     }
 
     /**
@@ -101,35 +78,41 @@ export class PlanService {
      * @param planList 現在の予定リスト
      * @return 予定が削除された後のリスト
      */
-    deletePlanOne(plan: Plan, planList: Plan[]): Plan[] {
-        var arrayIdx: number = 0;
-        var deleteIdx: number = 0;
+    deletePlanOne(deletePlan: Plan, planList: Plan[]): Plan[] {
         if (planList.length === 1) {
             planList = null;
             return planList;
         }
-        while (deleteIdx < planList.length) {
-            if (planList[deleteIdx] === plan) {
-                planList.splice(deleteIdx, 1);
-            }
-            deleteIdx++;
-        }
-        return planList;
+        return planList.filter(plan => deletePlan !== plan);
     }
 
     /**
      * チェックボックスの状態からリストの個数をカウントする
+     * 
      * @param planList 現在の予定リスト
-     * @param checkPattern カウントするチェックボックスの状態
      * true...チェックあり, false...チェックなし
+     * @return チェックされた予定の数
      */
-    countPlanOnCheck(planList: Plan[], checkPattern: boolean): number {
-        var count: number = 0;
-        for (var i = 0; i < planList.length; i++) {
-            if (planList[i].isCheck === checkPattern) {
-                count++;
-            }
-        }
-        return count;
+    countPlanOnCheck(planList: Plan[]): number {
+        return planList.filter(plan => plan.isCompleted).length;
+    }
+
+    /**
+     * 引数のリストをローカルストレージに更新する
+     * 
+     * @param planList 更新する予定リスト
+     */
+    updateStorage(planList: Plan[]): void {
+        localStorage.removeItem(MY_STORAGE_KEY);
+        localStorage.setItem(MY_STORAGE_KEY, JSON.stringify(planList));
+    }
+
+    /**
+     * 「ローカルストレージの中身を全取得する」
+     * 
+     * @return ローカルストレージの中身を配列として返す
+     */
+    getPlanStorage(): Plan[] {
+        return JSON.parse(localStorage.getItem(MY_STORAGE_KEY)) || [];
     }
 }

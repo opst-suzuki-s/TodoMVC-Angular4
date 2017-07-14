@@ -5,10 +5,10 @@
 
 <!-- 入力テキスト領域 -->
 <div class="block-form">
-  <span *ngIf="planList" class="checkAll">
+  <span *ngIf="planList" class="check-all">
     <input type="checkbox" [(ngModel)]="isAllcheck" (click)="allChangeCheckbox()">
   </span>
-  <input class="planText" [(ngModel)]="newTodoText" (keyup.enter)="addPlan()" placeholder="What needs to be done?">
+  <input type="text" class="plan-text" [(ngModel)]="newTodoText" (keyup.enter)="addPlan()" placeholder="What needs to be done?">
 </div>
 
 <!-- Todoリスト領域 -->
@@ -17,9 +17,9 @@
     <li *ngFor="let plan of planList">
       <div class="block-list" (mouseenter)="showBtn(plan)" (mouseleave)="hideBtn(plan)">
         <label>
-          <input class="box" type="checkbox" (click)="changeCheckbox(plan)" [checked]="plan.isCheck" >
-          <span [class.checked]="plan.isCheck === true" >{{plan.value}}</span>
-          <div *ngIf="plan.isShowDeleteBtn === true" class="deleteBtn" (click)=deletePlanOne(plan)>×</div>
+          <input class="box" type="checkbox" (click)="changeCheckbox(plan)" [checked]="plan.isCompleted" >
+          <span [class.checked]="plan.isCompleted" >{{plan.value}}</span>
+          <div *ngIf="plan.isShowDeleteBtn" class="delete-btn" (click)=deletePlanOne(plan)>×</div>
         </label>
       </div>
     </li>
@@ -27,9 +27,9 @@
 
       <!-- 件数表示、削除実行領域 -->
       <div class="block-list-menu">
-        <span class="itemNum">{{listCnt}}items left</span>
-        <div *ngIf="isShowDeleteListBtn === true" class="delete" (click)="deleteCheckedPlan()">
-          <span class="deleteText">Clear completed</span>
+        <span class="item-num">{{leftItemsCount()}}items left</span>
+        <div *ngIf="checkboxIsSelected()" class="delete" (click)="deleteCheckedPlan()">
+          <span class="delete-text">Clear completed</span>
         </div>
       </div>
 

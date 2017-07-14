@@ -1,25 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 
 import { PlanService } from './plan.service';
-import { PlanStorage } from './plan-storage.service';
 import { Plan } from './plan';
 
 @Component({
   selector: 'app-plan',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [PlanService, PlanStorage]
+  providers: [PlanService]
 })
 
 export class AppComponent implements OnInit {
   title = 'todos';
-  planList: Plan[];
-  newTodoText: string = "";
-  isAllcheck: boolean = false;
-  isShowDeleteListBtn: boolean = false;
-  listCnt: number = 0;
-  constructor(private planService: PlanService,
-    private storageService: PlanStorage) { }
+  planList: Plan[]; // 予定リスト
+  newTodoText: string = ""; // 入力された予定
+  isAllcheck: boolean = false; // 全選択用のチェックボックスの状態（true...チェックあり, false...チェックなし）
+  constructor(private planService: PlanService) { }
 
   /**
    * 「リストに予定を追加する」
@@ -27,19 +23,14 @@ export class AppComponent implements OnInit {
    */
   addPlan(): void {
     var plan = new Plan();
-    var temporaryList: Plan[];
     var empty = this.planService.isEmpty(this.newTodoText);
     if (empty) {
       this.newTodoText = "";
       return;
     }
     plan.value = this.newTodoText;
-    temporaryList = this.planService.addPlan(plan, this.planList);
-    this.storageService.addPlanStorage(temporaryList);
-    this.planList = this.storageService.getPlanStorage();
+    this.planList = this.planService.addPlan(plan, this.planList);
     this.newTodoText = "";
-    this.isShowDeleteListBtn = this.planService.checkboxIsSelected(this.planList);
-    this.listCnt = this.planService.countPlanOnCheck(this.planList, false);
   }
 
   /**
@@ -50,10 +41,7 @@ export class AppComponent implements OnInit {
    */
   changeCheckbox(plan: Plan): void {
     this.planService.changeCheckbox(plan);
-    this.storageService.deleteAllPlan();
-    this.storageService.addPlanStorage(this.planList);
-    this.isShowDeleteListBtn = this.planService.checkboxIsSelected(this.planList);
-    this.listCnt = this.planService.countPlanOnCheck(this.planList, false);
+    this.planService.updateStorage(this.planList);
   }
 
   /**
@@ -62,10 +50,7 @@ export class AppComponent implements OnInit {
    */
   allChangeCheckbox(): void {
     this.planService.allChangeCheckbox(this.isAllcheck, this.planList);
-    this.storageService.deleteAllPlan();
-    this.storageService.addPlanStorage(this.planList);
-    this.isShowDeleteListBtn = this.planService.checkboxIsSelected(this.planList);
-    this.listCnt = this.planService.countPlanOnCheck(this.planList, false);
+    this.planService.updateStorage(this.planList);
   }
 
   /**
@@ -73,15 +58,12 @@ export class AppComponent implements OnInit {
    *    チェックボックスにチェックを入れた後（Clear completed）をクリックすると呼び出される
    */
   deleteCheckedPlan(): void {
-    this.storageService.deleteAllPlan();
-    this.isAllcheck = false;
     this.planList = this.planService.deleteCheckedPlan(this.planList);
     if (this.planList === null) {
       return;
     }
-    this.isShowDeleteListBtn = this.planService.checkboxIsSelected(this.planList);
-    this.storageService.addPlanStorage(this.planList);
-    this.listCnt = this.planService.countPlanOnCheck(this.planList, false);
+    this.planService.updateStorage(this.planList);
+    this.isAllcheck = false;
   }
 
   /**
@@ -91,13 +73,10 @@ export class AppComponent implements OnInit {
    * @param plan 削除する予定
    */
   deletePlanOne(plan: Plan): void {
-    this.storageService.deleteAllPlan();
     this.isAllcheck = false;
-    plan.isCheck = true;
+    plan.isCompleted = true;
     this.planList = this.planService.deletePlanOne(plan, this.planList);
-    this.isShowDeleteListBtn = this.planService.checkboxIsSelected(this.planList);
-    this.storageService.addPlanStorage(this.planList);
-    this.listCnt = this.planService.countPlanOnCheck(this.planList, false);
+    this.planService.updateStorage(this.planList);
   }
 
   /**
@@ -121,14 +100,37 @@ export class AppComponent implements OnInit {
   }
 
   /**
+     * チェックボックスの状態からリストの個数をカウントする
+     * 
+     * @return チェックのついていない予定の数
+     */
+  leftItemsCount(): number {
+    return this.planList.filter(plan => !plan.isCompleted).length;
+  }
+
+  /**
+     * チェックボックスが押されているか判断する
+     * 
+     * @return １つでもチェックボックスが押されている状態か
+     * true...押されている, false...押されていない
+     */
+  checkboxIsSelected(): boolean {
+    var selected = false;
+    for (var i = 0; i < this.planList.length; i++) {
+      if (this.planList[i].isCompleted) {
+        selected = true;
+      }
+    }
+    return selected;
+  }
+
+  /**
    * ページが読み込まれたときにローカルストレージに予定があれば表示する。
    * なければリストを初期化する
    */
   ngOnInit(): void {
-    if (this.storageService.getPlanStorage().length !== 0) {
-      this.planList = this.storageService.getPlanStorage();
-      this.isShowDeleteListBtn = this.planService.checkboxIsSelected(this.planList);
-      this.listCnt = this.planService.countPlanOnCheck(this.planList, false);
+    if (this.planService.getPlanStorage().length !== 0) {
+      this.planList = this.planService.getPlanStorage();
     } else {
       this.planList = null;
     }

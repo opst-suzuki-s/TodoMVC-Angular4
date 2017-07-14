@@ -16,13 +16,13 @@ div.block-form{
     position: relative;
 }
 
-.checkAll{
+.check-all{
     float: left;
     padding-top: 0.7em;
     margin-left: 1.7em;
 }
 
-.planText{
+.plan-text{
     padding:0.3em 0;
     font-size: 1.5em;
     margin-left: -1.5em;
@@ -71,14 +71,14 @@ div.block-list:hover{
     color: #CCCCCC;
 }
 
-.deleteBtn{
+.delete-btn{
     float: right;
     margin-right: 1em;
     color: #BC8F8F;
     font-weight: bold;
 }
 
-.deleteBtn:hover{
+.delete-btn:hover{
     color: #CC0000;
     cursor: pointer;
 }
@@ -95,7 +95,7 @@ div.block-list-menu{
     text-align: left;
 }
 
-.itemNum{
+.item-num{
     font-size: 0.7em;
     margin-left: 1em;
     color: #777777;
@@ -114,6 +114,6 @@ div.block-list-menu{
     cursor: pointer;
 }
 
-.deleteText{
+.delete-text{
     vertical-align: bottom;
 }
