@@ -4,7 +4,6 @@ import { Plan } from './plan';
 
 @Injectable()
 export class PlanService {
-    // Gitのテスト
     /**
      * 予定の内容が空、またはスペースだけじゃないかを判断する
      * 
