@@ -1,6 +1,6 @@
 import { ToDoAppPage } from './app.po';
 
-describe('to-do-app App', function() {
+describe('to-do-app App', function () {
   let page: ToDoAppPage;
 
   beforeEach(() => {
@@ -9,6 +9,6 @@ describe('to-do-app App', function() {
 
   it('should display message saying app works', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
+    expect(page.getParagraphText()).toEqual('todos');
   });
 });
