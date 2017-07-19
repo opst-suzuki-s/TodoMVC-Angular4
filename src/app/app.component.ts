@@ -60,10 +60,10 @@ export class AppComponent implements OnInit {
   deleteCheckedPlan(): void {
     this.planList = this.planService.deleteCheckedPlan(this.planList);
     if (this.planList === null) {
+      this.isAllcheck = false;
       return;
     }
     this.planService.updateStorage(this.planList);
-    this.isAllcheck = false;
   }
 
   /**
@@ -73,9 +73,11 @@ export class AppComponent implements OnInit {
    * @param plan 削除する予定
    */
   deletePlanOne(plan: Plan): void {
-    this.isAllcheck = false;
     plan.isCompleted = true;
     this.planList = this.planService.deletePlanOne(plan, this.planList);
+    if (this.planList === null) {
+      this.isAllcheck = false;
+    }
     this.planService.updateStorage(this.planList);
   }
 
